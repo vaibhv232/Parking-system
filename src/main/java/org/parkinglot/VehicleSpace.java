@@ -1,33 +1,45 @@
 package org.parkinglot;
 
+import java.time.LocalDateTime;
+
 public class VehicleSpace {
-    private int spaceNumber;
-    private boolean availability;
+    private boolean available;
     private VehicleType type;
+    private int spaceNumber;
+    private LocalDateTime parkedAt; // Add this line
 
     public VehicleSpace(int spaceNumber, VehicleType type) {
-        this.spaceNumber = spaceNumber;
-        this.availability = true;
+        this.available = true;
         this.type = type;
-    }
-
-    public int getSpaceNumber() {
-        return spaceNumber;
+        this.spaceNumber = spaceNumber;
     }
 
     public boolean isAvailable() {
-        return availability;
+        return available;
     }
 
     public void occupy() {
-        availability = false;
+        this.available = false;
     }
 
     public void vacate() {
-        availability = true;
+        this.available = true;
+        this.parkedAt = null; // Reset parkedAt when vacated
+    }
+
+    public void setParkedAt(LocalDateTime parkedAt) { // Implement this method
+        this.parkedAt = parkedAt;
+    }
+
+    public LocalDateTime getParkedAt() { // Add this getter method
+        return parkedAt;
     }
 
     public VehicleType getType() {
         return type;
+    }
+
+    public int getSpaceNumber() {
+        return spaceNumber;
     }
 }

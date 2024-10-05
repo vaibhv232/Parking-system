@@ -2,6 +2,8 @@ package org.parkinglot;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class ParkingLot {
     private int totalFloors;
@@ -9,7 +11,7 @@ public class ParkingLot {
 
     public ParkingLot(int totalFloors, Map<VehicleType, Integer> capacityPerFloor) {
         this.totalFloors = totalFloors;
-        this.floors = new HashMap<>();
+        floors = new HashMap<>();
         initializeFloors(capacityPerFloor);
     }
 
@@ -19,7 +21,7 @@ public class ParkingLot {
         }
     }
 
-    public boolean addVehicle(Vehicle vehicle, int floorNumber) {
+    public synchronized boolean addVehicle(Vehicle vehicle, int floorNumber) {
         if (floorNumber < 1 || floorNumber > totalFloors) {
             System.out.println("Invalid floor number.");
             return false;
@@ -33,29 +35,30 @@ public class ParkingLot {
             System.out.println("Invalid vehicle type for this floor.");
             return false;
         }
-
-        int availableSpaces = 0;
-
         for (VehicleSpace space : floor.getSpaces().values()) {
             if (space.getType() == vehicleType && space.isAvailable()) {
-                availableSpaces++;
-            }
-        }
+                space.occupy(); // Mark space as occupied
+                space.setParkedAt(LocalDateTime.now()); // Set the time the vehicle was parked
 
-        if (availableSpaces == 0) {
-            System.out.println("No available spaces for " + vehicleType + " on floor " + floorNumber + ".");
-            return false;
-        }
-
-        for (VehicleSpace space : floor.getSpaces().values()) {
-            if (space.getType() == vehicleType && space.isAvailable()) {
-                space.occupy();
                 System.out.println(vehicleType + " with registration number " + vehicle.getRegistrationNumber() +
-                        " parked at space " + space.getSpaceNumber() + " on floor " + floorNumber + ".");
-                return true;
+            " parked at space " + space.getSpaceNumber() + " on floor " + floorNumber + 
+            " for " + vehicle.getParkingDuration() + " seconds.");
+
+    new Thread(() -> {
+        try {
+            Thread.sleep(vehicle.getParkingDuration() * 1000); // Convert to milliseconds
+            System.out.println("Removing vehicle " + vehicle.getRegistrationNumber() + " after " + vehicle.getParkingDuration() + " seconds.");
+            removeVehicle(vehicle.getRegistrationNumber(), vehicle.getType());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }).start();
+
+    return true;
             }
         }
 
+        System.out.println("No available spaces for " + vehicleType + " on floor " + floorNumber + ".");
         return false;
     }
 
@@ -63,42 +66,53 @@ public class ParkingLot {
         for (Floor floor : floors.values()) {
             for (VehicleSpace space : floor.getSpaces().values()) {
                 if (!space.isAvailable() && space.getType() == vehicleType) {
-                    space.vacate();
-                    System.out.println(vehicleType + " with registration number " +
+                    LocalDateTime parkedAt = space.getParkedAt(); // Get the parking time
+                    long secondsParked = Duration.between(parkedAt, LocalDateTime.now()).getSeconds();
+                    
+                    space.vacate(); // Vacate the space
+                    String notificationMessage = vehicleType + " with registration number " +
                             registrationNumber + " removed from space " + space.getSpaceNumber() +
-                            " on floor " + floor.getFloorNumber() + ".");
+                            " on floor " + floor.getFloorNumber() + ". Parked for " + secondsParked + " seconds.";
+    
+                    // Send notification
+                    Notification.sendNotification(notificationMessage);
+                    
+                    // Print the updated status of the floor
+                    printAvailability(floor.getFloorNumber(), vehicleType);
                     return true;
                 }
             }
         }
+    
         System.out.println("Vehicle with registration number " + registrationNumber + " not found in the parking lot.");
         return false;
     }
-
+    
     public void printAvailability(int floorNumber, VehicleType vehicleType) {
         if (floorNumber < 1 || floorNumber > totalFloors) {
             System.out.println("Invalid floor number.");
             return;
         }
-
+    
         Floor floor = floors.get(floorNumber);
-
+    
         if (floor.getCapacity().containsKey(vehicleType)) {
             int totalCapacity = floor.getCapacity().get(vehicleType);
             int availableSpaces = 0;
-
+    
             for (VehicleSpace space : floor.getSpaces().values()) {
                 if (space.getType() == vehicleType && space.isAvailable()) {
                     availableSpaces++;
                 }
             }
-
+    
             System.out.println("Available spaces for " + vehicleType + " on floor " + floorNumber + ": " +
                     availableSpaces + " out of " + totalCapacity + ".");
         } else {
             System.out.println("Invalid vehicle type for this floor.");
         }
     }
+    
 
     // New method to check the status of each floor
     public void printStatus() {

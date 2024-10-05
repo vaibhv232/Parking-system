@@ -41,8 +41,11 @@ public class Main {
                     String color = scanner.nextLine();
                     System.out.print("Enter Floor Number to Park: ");
                     int floorToPark = scanner.nextInt();
+                    
+                    System.out.print("Enter Parking Duration in seconds: "); // New input
+                    int parkingDuration = scanner.nextInt(); // Capture parking duration
 
-                    Vehicle vehicle = new Vehicle(regNumber, color, VehicleType.CAR);
+                    Vehicle vehicle = new Vehicle(regNumber, color, VehicleType.CAR, parkingDuration);
                     try {
                         parkingLot.addVehicle(vehicle, floorToPark);
                         System.out.println("Vehicle added successfully.");
@@ -50,6 +53,7 @@ public class Main {
                         System.out.println("Error: " + e.getMessage());
                     }
                     break;
+
 
                 case 2:
                     // Remove Vehicle

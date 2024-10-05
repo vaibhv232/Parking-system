@@ -4,11 +4,13 @@ public class Vehicle {
     private String registrationNumber;
     private String color;
     private VehicleType type;
+    private int parkingDuration; // Duration in seconds
 
-    public Vehicle(String registrationNumber, String color, VehicleType type) {
+    public Vehicle(String registrationNumber, String color, VehicleType type, int parkingDuration) {
         this.registrationNumber = registrationNumber;
         this.color = color;
         this.type = type;
+        this.parkingDuration = parkingDuration;
     }
 
     public String getRegistrationNumber() {
@@ -21,5 +23,9 @@ public class Vehicle {
 
     public VehicleType getType() {
         return type;
+    }
+
+    public int getParkingDuration() {
+        return parkingDuration;
     }
 }
