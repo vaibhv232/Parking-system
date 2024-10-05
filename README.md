@@ -1,54 +1,32 @@
-# Car Parking System in Java
+# Smart Parking System
 
-This Java project implements a versatile car parking system with a modular design. The system supports various functionalities such as initialization, adding/removing vehicles, and checking availability. It includes a flat cost structure for parking fees and is designed to be flexible for future extensions.
+## Overview
 
-## Classes
+The Smart Parking System is a Java-based application designed to efficiently manage parking spaces in a multi-floor parking lot. It allows users to add and remove vehicles, check parking availability on specific floors, and receive notifications for vehicle management events.
 
-1. **ParkingLot:** Manages parking spaces.
-2. **Vehicle:** Represents vehicles with essential attributes.
-3. **Floor:** Represents parking lot floors with capacity details.
-4. **VehicleSpace:** Represents individual parking spaces.
-5. **CostStrategy:** Manages cost calculation based on vehicle type.
+## Features
 
-## Usage
+- **Multi-Floor Support:** Manage parking across multiple floors.
+- **Vehicle Management:** Add and remove vehicles with unique registration numbers.
+- **Availability Check:** Check available parking spaces on a specific floor or across all floors.
+- **Notifications:** Receive notifications for vehicle parking and removal events.
 
-1. **Initialization:**
-   - Configure the parking lot with desired floors and spaces per floor.
+## Technologies Used
 
-2. **Add Vehicle:**
-   - Use the `addVehicle` method to add vehicles with details like type, registration number, and color.
+- **Java 11:** The application is built using Java.
+- **Swing:** For GUI pop-up notifications.
+- **Docker:** Containerization of the application for consistent environments.
 
-3. **Remove Vehicle:**
-   - Remove vehicles by specifying the registration number or token.
+## Getting Started
 
-4. **Check Availability:**
-   - Verify available vehicle spaces on a specific floor for a given vehicle type using `checkAvailability`.
+### Prerequisites
 
-## Cost Structure
+- Java 11 or higher
+- Docker (if using containerization)
 
-- Bike: ₹10 per hour
-- Car/Jeep: ₹20 per hour
-- Bus/Truck: ₹30 per hour
+### Installation
 
-## Use Case
-
-1. **Initialization for Cars:**
-   - Set up the parking lot for two cars.
-
-2. **Vehicle Entry:**
-   - Add details for two cars, generating a token ID for each with a timestamp.
-
-3. **Vehicle Exit:**
-   - Validate tokens and timestamps to retrieve car details along with the total parking fee.
-
-4. **Capacity Full:**
-   - Attempting to enter a third car when the capacity is full should result in an error.
-
-## Project Expectations
-
-- Main method in the Java code project.
-- Configuration initialization for capacity, floors, vehicle types, currency, and hourly charges.
-- Vehicle entry and exit using either registration number or token.
-
- 
-# Parking-system
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/vaibhv232/Parking-system.git
+   cd Parking-system/src/main/java
